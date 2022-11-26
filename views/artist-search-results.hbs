@@ -1,10 +1,33 @@
-
+{{!-- 
 {{#each artists}}
 <div>
-  <img src="{{this.images}}" class="card-img-top" alt="...">
+  <img src="{{images{url}}}" class="card-img-top" alt="...">
   <div>
     this is there
     <h1>{{this.name}} </h1>
   </div>
 </div>
-{{/each}}
+{{/each}} --}}
+<div>
+      {{#each data.body.artists.items}} 
+     <img class="artistPics" src="{{this.image_url}}"/>
+     <h5 class="artistName">{{this.name}} </h5>
+     
+      {{/each}}
+  </div>
+<a href="/albums/someArtistIdGoesHere">View Albums</a>
+<ul>
+    {{#each artists}}
+        <li>{{ this.name }}
+            <br>
+            {{#if this.images}}
+                <img src="{{this.images.2.url}}" alt="{{this.name}}">
+            {{else}}
+                <img src="https://user-images.githubusercontent.com/25275745/82283218-ba9ec200-9963-11ea-9fc8-8408b57bef12.png"
+                    alt="{{this.name}}" style="width: 160px">
+            {{/if}}
+            <br>
+            {{!-- app.get('/albums/:artistId'....) --}}
+            <a href="/albums/{{this.id}}">View albums</a> </li>
+    {{/each}}
+</ul>

@@ -20,7 +20,7 @@ const spotifyApi = new SpotifyWebApi({
 // Retrieve an access token
 spotifyApi
   .clientCredentialsGrant()
-  .then((data) => spotifyApi.setAccessToken(data.body["access_token"]))
+  .then((artists) => spotifyApi.setAccessToken(artists.body["access_token"]))
   .catch((error) =>
     console.log("Something went wrong when retrieving an access token", error)
   );
@@ -29,19 +29,49 @@ app.get("/", (req, res) => {
   res.render("index");
 });
 
-
 app.get("/artist-search", (req, res) => {
   spotifyApi
     .searchArtists(req.query.artist)
     .then((artists) => {
-     //console.log('The received data from the API: ', artist.body.artists.items);
-      res.render('artist-search-results',{artists})
+      //console.log('The received artists from the API: ', artists.body.artists.items[0]);
+      res.render("artist-search-results", {
+        artists: artists.body.artists.items,
+      });
     })
     .catch((err) =>
       console.log("The error while searching artists occurred: ", err)
     );
 });
 
+app.get("/albums/:artistId", (req, res) => {
+  //console.log("Id is: ", req.params.artistId);
+  spotifyApi
+    .getArtistAlbums(req.params.artistId)
+    .then((artists) => {
+      console.log(
+        "The received artists from the API: ",
+        artists.body.items[0].artists[0].name
+      );
+      res.render("albums", {
+        albums: artists.body.items,
+        artist: artists.body.items[0].artists[0].name,
+      });
+    })
+    .catch((err) =>
+      console.log("The error while searching artists occurred: ", err)
+    );
+});
+
+app.get("/tracks/:trackId", (req, res) => {
+  spotifyApi
+    .getAlbumTracks(req.params.trackId)
+    .then((artists) => {
+      res.render("tracks", { tracks: artists.body.items });
+    })
+    .catch((err) =>
+      console.log("The error while searching artists occurred: ", err)
+    );
+});
 
 app.listen(3000, () =>
   console.log("My Spotify project running on port 3000 🎧 🥁 🎸 🔊")
